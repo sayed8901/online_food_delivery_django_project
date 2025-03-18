@@ -83,7 +83,6 @@ class LogoutAPIView(APIView):
 
 
 
-
 # API to get all owners
 class OwnerListAPIView(APIView):
     permission_classes = [IsAuthenticated, IsOwner]
