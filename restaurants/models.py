@@ -31,6 +31,14 @@ class MenuItem(models.Model):
 
 
 
+# Intermediary model to store quantity of each item in an order
+class OrderItem(models.Model):
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name="order_items")
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)  # Store quantity
+
+    
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ('Preparing', 'Preparing'),
@@ -48,6 +56,8 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Preparing')
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    paid = models.BooleanField(default=False)
 
 
     def __str__(self):
