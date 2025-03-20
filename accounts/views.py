@@ -86,6 +86,7 @@ class LogoutAPIView(APIView):
 # API to get all owners
 class OwnerListAPIView(APIView):
     permission_classes = [IsAuthenticated, IsOwner]
+    serializer_class = UserSerializer
 
     def get(self, request):
         owners = User.objects.filter(role="owner")
@@ -97,6 +98,7 @@ class OwnerListAPIView(APIView):
 # API to get all normal users
 class UserListAPIView(APIView):
     permission_classes = [IsAuthenticated, IsUser]
+    serializer_class = UserSerializer
 
     def get(self, request):
         normal_users = User.objects.filter(role="user")
