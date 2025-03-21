@@ -138,7 +138,7 @@ WSGI_APPLICATION = 'online_food_delivery_project.wsgi.application'
 
 
 
-# Local PostgreSQL database
+# # Local PostgreSQL database
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',

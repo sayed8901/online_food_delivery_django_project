@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework import generics, permissions
 from rest_framework.response import Response
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -17,12 +18,16 @@ from .serializers import PaymentSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from accounts.permissions import IsOwnerOrReadOnly
 
+from drf_spectacular.utils import extend_schema
+
 
 
 
 
 # Creating class to initiate payment integration for a job post
 class InitiatePaymentView(APIView):
+    serializer_class = PaymentSerializer
+
     # Method initiate payment integration using SSLCommerz
     def initiate_ssl_payment(self, order):
         # SSLCommerz settings
@@ -109,6 +114,8 @@ class InitiatePaymentView(APIView):
 
 # action to define for successful payment
 class PaymentSuccessView(APIView):
+    serializer_class = PaymentSerializer
+
     def post(self, request):
         # retrieving transaction_id and validation_id
         tran_id = request.data.get('tran_id')
@@ -174,6 +181,8 @@ class PaymentSuccessView(APIView):
 
 # for payment failures
 class PaymentFailView(APIView):
+    serializer_class = PaymentSerializer
+    
     def post(self, request):
         # return Response({"message": "Payment failed, please try again."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -189,6 +198,8 @@ class PaymentFailView(APIView):
 
 # for cancel payment
 class PaymentCancelView(APIView):
+    serializer_class = PaymentSerializer
+
     def post(self, request):
         # return Response({"message": "Payment canceled by user."}, status=status.HTTP_200_OK)
 
@@ -204,20 +215,18 @@ class PaymentCancelView(APIView):
 
 
 
-class AllPaymentsView(APIView):
+# payment list view set
+class AllPaymentsView(generics.ListAPIView):
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
+    queryset = Payment.objects.all()
 
-    # to get all the payment info
-    def get(self, request, format = None):
-        # format=None is used here to accept any types of data
-        print('All PostList  --->> inside GET ')
 
-        posts = Payment.objects.all()
-        serializer = PaymentSerializer(posts, many = True)
-
-        return Response(serializer.data)
+    @extend_schema(operation_id="list_all_payments")
+    def get(self, request, *args, **kwargs):
+        """Retrieve all payments."""
+        return super().get(request, *args, **kwargs)
 
 
 
@@ -225,50 +234,31 @@ class AllPaymentsView(APIView):
 
 
 # payment detail view set
-class PaymentDetailView(APIView):
+class PaymentDetailView(generics.RetrieveDestroyAPIView):
     serializer_class = PaymentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]    
-
-
-    # creating a custom function to find the payment object for the get(), put() or in the delete() method
-    def get_object(self, pk):
-        try:
-            return Payment.objects.get(pk = pk)
-        except Payment.DoesNotExist:
-            raise Http404
+    queryset = Payment.objects.all()
 
 
-
-    # get a single payment
-    def get(self, request, pk, format = None):
-        print('inside get in payment_detail')
-
-        payment_data = self.get_object(pk)
-        serializer = PaymentSerializer(payment_data)
-
-        return Response(serializer.data)
+    @extend_schema(operation_id="retrieve_payment_by_id")
+    def get(self, request, *args, **kwargs):
+        """Retrieve payment details by ID."""
+        return super().get(request, *args, **kwargs)
 
 
-
-
-    # to delete a post data
-    def delete(self, request, pk, format = None):
-        print('inside delete in payment_detail')
-
-        payment_data = self.get_object(pk)
+    @extend_schema(operation_id="delete_payment_by_id")
+    def delete(self, request, *args, **kwargs):
+        """Delete a payment record and mark the order as unpaid."""
+        payment = self.get_object()
         
-        # Find the associated order
-        order = get_object_or_404(Order, id = payment_data.order.id)
-        print('inside order payment delete request:', order)
-        
-        # Update the job post's is_payment_done field
+        # Update the associated order's payment status
+        order = get_object_or_404(Order, id=payment.order.id)
         order.is_payment_done = False
         order.save()
 
-        payment_data.delete()
-
-        return Response(status = status.HTTP_204_NO_CONTENT)
-
+        # Delete payment record
+        payment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 

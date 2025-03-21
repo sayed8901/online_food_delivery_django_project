@@ -5,6 +5,9 @@ from .models import Restaurant, MenuItem
 from .serializers import RestaurantSerializer, MenuItemSerializer
 from accounts.permissions import IsOwner, IsUser, IsOwnerOrReadOnly
 
+from drf_spectacular.utils import extend_schema
+
+
 
 
 # CRUD Operations for Restaurants (Owner Only)
@@ -15,7 +18,6 @@ class RestaurantListCreateView(generics.ListCreateAPIView):
     # Handle GET operation
     def get_queryset(self):
         return Restaurant.objects.all()
-        
 
     # Handle POST operation
     def perform_create(self, serializer):
@@ -23,11 +25,23 @@ class RestaurantListCreateView(generics.ListCreateAPIView):
 
 
 # Handle ID-wise GET, PUT, PATCH & DELETE operation
-class RestaurantDetailView(generics.RetrieveUpdateDestroyAPIView):
+class AllRestaurantDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RestaurantSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
     queryset = Restaurant.objects.all()
+
+
+
+# To Get Menu Items for a Specific Restaurant
+class RestaurantMenuItemsView(generics.ListAPIView):
+    serializer_class = MenuItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        restaurant_id = self.kwargs['restaurant_id']
+        return MenuItem.objects.filter(restaurant__id = restaurant_id)
+    
 
 
 
@@ -65,6 +79,15 @@ class MenuItemListCreateView(generics.ListCreateAPIView):
 
 
 
+    @extend_schema(operation_id="list_all_menu_items")
+    def get(self, request, *args, **kwargs):
+        """Retrieve all menu items from all restaurants."""
+        return super().get(request, *args, **kwargs)
+    
+
+
+
+
 # Handle ID-wise GET operation (can retrieve by both user or owner)
 # Handle ID-wise PUT, PATCH & DELETE operation (Owner Only)
 class MenuItemDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -72,4 +95,5 @@ class MenuItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
     queryset = MenuItem.objects.all()
+
 
