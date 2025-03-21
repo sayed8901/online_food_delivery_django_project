@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    OrderCreateView, OrderListView, 
+    OrderCreateView, OrderListView, UserOrdersView,
     OwnerOrderListView, UpdateOrderStatusView
 )
 
@@ -8,12 +8,12 @@ from .views import (
 
 urlpatterns = [
     # Orders Placement API       # user only urls
-    path('orders/', OrderListView.as_view(), name='order-list'),
-    path('orders/create/', OrderCreateView.as_view(), name='order-create'),
-
+    path('create/', OrderCreateView.as_view(), name='order-create'),
+    path('all/', OrderListView.as_view(), name='order-list'),
+    path('user/<int:user_id>/', UserOrdersView.as_view(), name='user-orders'),
 
     # Orders list_view API       # owner only urls
-    path('owner/orders/', OwnerOrderListView.as_view(), name='owner-orders'),
-    path('owner/orders/<int:pk>/', UpdateOrderStatusView.as_view(), name='update-order-status'),
+    path('owner/', OwnerOrderListView.as_view(), name='owner-orders'),
+    path('owner/update/<int:pk>/', UpdateOrderStatusView.as_view(), name='update-order-status'),
 ]
 

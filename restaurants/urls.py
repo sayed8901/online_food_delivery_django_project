@@ -18,7 +18,7 @@ urlpatterns = [
 
 
     # New Endpoint to Get Menu Items by Restaurant
-    path('<int:restaurant_id>/menu/', RestaurantMenuItemsView.as_view(), name='restaurant-menu-items'),
+    path('menu/<int:restaurant_id>/', RestaurantMenuItemsView.as_view(), name='restaurant-menu-items'),
 ]
 
 

@@ -75,6 +75,17 @@ class OrderListView(generics.ListAPIView):
 
 
 
+# Get all orders of a specific user
+class UserOrdersView(generics.ListAPIView):
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        return Order.objects.filter(user__id=user_id)
+
+
+
 
 
 # Order Management (Owner Only)

@@ -232,6 +232,18 @@ class AllPaymentsView(generics.ListAPIView):
 
 
 
+# Get all payments of a specific user
+class UserPaymentsView(generics.ListAPIView):
+    serializer_class = PaymentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        return Payment.objects.filter(order__user__id=user_id)
+    
+
+
+
 
 # payment detail view set
 class PaymentDetailView(generics.RetrieveDestroyAPIView):
