@@ -14,6 +14,8 @@ from pathlib import Path
 
 from datetime import timedelta
 
+import dj_database_url
+
 
 
 import environ
@@ -40,7 +42,14 @@ SECRET_KEY = 'django-insecure-jg-tt=ztp*h_3mo6oo5wart0c)u0tpm1i&2$tkup6s9=i#7b9g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+
+ALLOWED_HOSTS = ["*"]
+
+
+# To trust and allow CSRF token on deployment, adding our domain to CSRF_TRUSTED_ORIGINS list
+CSRF_TRUSTED_ORIGINS = ['https://online-food-delivery-9i3g.onrender.com','https://*.127.0.0.1']
+
 
 
 # Application definition
@@ -130,15 +139,26 @@ WSGI_APPLICATION = 'online_food_delivery_project.wsgi.application'
 
 
 # Local PostgreSQL database
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'online_food_delivery_app',
+#         'USER': env("DB_USER"),
+#         'PASSWORD': env("DB_PASSWORD"),
+#         'HOST': env("DB_HOST"),
+#         'PORT': '5432',
+#     }
+# }
+
+
+
+# # onRender live PostgreSQL Database
+# Database configuration for PostgreSQL with on-render development server
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'online_food_delivery_app',
-        'USER': env("DB_USER"),
-        'PASSWORD': env("DB_PASSWORD"),
-        'HOST': env("DB_HOST"),
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.        
+        default=env("onRender_PostgreSQL_External_Database_URL"),
+    )
 }
 
 
