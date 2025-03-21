@@ -15,6 +15,7 @@ class RestaurantListCreateView(generics.ListCreateAPIView):
     # Handle GET operation
     def get_queryset(self):
         return Restaurant.objects.all()
+        
 
     # Handle POST operation
     def perform_create(self, serializer):

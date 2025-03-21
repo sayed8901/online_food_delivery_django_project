@@ -9,7 +9,7 @@ class Restaurant(models.Model):
     description = models.TextField()
     location = models.CharField(max_length=255)
 
-    # image = models.ImageField(upload_to='restaurant_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='restaurant_images/', blank=True, null=True)
 
 
     def __str__(self):
