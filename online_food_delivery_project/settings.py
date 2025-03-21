@@ -48,8 +48,16 @@ ALLOWED_HOSTS = ["*"]
 
 
 # To trust and allow CSRF token on deployment, adding our domain to CSRF_TRUSTED_ORIGINS list
-CSRF_TRUSTED_ORIGINS = ['https://online-food-delivery-9i3g.onrender.com','https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = [
+    'https://online-food-delivery-9i3g.onrender.com',
+    'https://*.127.0.0.1'
+]
 
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",                # Local React frontend
+    # "https://your-frontend-domain.com",     # Add production domain when deploying
+]
 
 
 # Application definition
@@ -73,6 +81,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
+    "corsheaders",
 ]
 
 
@@ -96,6 +105,7 @@ SIMPLE_JWT = {
 
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
