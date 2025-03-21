@@ -4,7 +4,7 @@ from .models import Restaurant, MenuItem
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(required=False) 
+    # image = serializers.ImageField(required=False) 
 
     class Meta:
         model = Restaurant
