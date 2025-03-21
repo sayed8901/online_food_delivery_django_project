@@ -16,6 +16,12 @@ from datetime import timedelta
 
 
 
+import environ
+env = environ.Env()
+environ.Env.read_env()
+
+
+
 # defining "accounts.CustomUser" as the AUTH_USER_MODEL
 AUTH_USER_MODEL = "accounts.CustomUser"
 
@@ -128,9 +134,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'online_food_delivery_app',
-        'USER': 'postgres',
-        'PASSWORD': 'sayed8901',
-        'HOST': 'localhost',
+        'USER': env("DB_USER"),
+        'PASSWORD': env("DB_PASSWORD"),
+        'HOST': env("DB_HOST"),
         'PORT': '5432',
     }
 }
@@ -184,5 +190,15 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+# SSLCommerz Sandbox Configuration
+SSLCOMMERZ = {
+    'store_id': env("store_ID"),
+    'store_pass': env("store_password"),
+    'issandbox': True # Set to False for live transactions
+}
+
 
 

@@ -101,7 +101,7 @@ class UpdateOrderStatusView(generics.UpdateAPIView):
         order = self.get_object()
 
         # Check if the order is paid before updating the status
-        if not order.paid:
+        if not order.is_payment_done:
             return Response({"error": "Order has not been paid yet, cannot confirm."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Proceed with the status update if the order is paid

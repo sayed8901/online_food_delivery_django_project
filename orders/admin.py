@@ -4,7 +4,7 @@ from .models import Order, OrderItem
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'restaurant', 'display_items_with_quantity', 'total_cost', 'status', 'created_at', 'paid',)
+    list_display = ('id', 'user', 'restaurant', 'display_items_with_quantity', 'total_cost', 'status', 'created_at', 'is_payment_done',)
 
     search_fields = ('user__username', 'restaurant__name')
     list_filter = ('status', 'restaurant', 'created_at')

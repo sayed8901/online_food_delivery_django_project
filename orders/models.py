@@ -31,7 +31,7 @@ class Order(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    paid = models.BooleanField(default=False)
+    is_payment_done = models.BooleanField(default=False)
 
 
     def __str__(self):

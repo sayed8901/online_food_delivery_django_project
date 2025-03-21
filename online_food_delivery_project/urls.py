@@ -9,14 +9,13 @@ from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('auth/', include('accounts.urls')),
     path('restaurants/', include('restaurants.urls')),
     path('orders/', include('orders.urls')),
-
+    path('payments/', include('payments.urls')),
 
 
     path("api-auth/", include("rest_framework.urls")),
