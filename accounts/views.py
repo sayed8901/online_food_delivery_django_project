@@ -1,5 +1,6 @@
 # views.py in accounts app
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -17,20 +18,41 @@ User = get_user_model()
 
 
 
-# Register API
-class RegisterAPIView(APIView):
+
+# Register API for Owners
+class OwnerRegisterAPIView(APIView):
     permission_classes = [AllowAny]
-    serializer_class = RegisterSerializer
 
     def post(self, request):
-        serializer = RegisterSerializer(data = request.data)
+        data = request.data.copy()
+        data['role'] = 'owner'  # role set to "owner"
+        serializer = RegisterSerializer(data = data)
 
         if serializer.is_valid():
-            user = serializer.save()
-            
+            serializer.save()
+            return Response({"message": "Restaurant Owner registered successfully."}, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+# Register API for Normal Users
+class UserRegisterAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        data = request.data.copy()
+        data['role'] = 'user'  # role set to "user"
+        serializer = RegisterSerializer(data = data)
+
+        if serializer.is_valid():
+            serializer.save()
             return Response({"message": "User registered successfully."}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -84,14 +106,12 @@ class LogoutAPIView(APIView):
 
 
 # API to get all owners
-class OwnerListAPIView(APIView):
+class OwnerListAPIView(ListAPIView):
     permission_classes = [IsAuthenticated, IsOwner]
     serializer_class = UserSerializer
 
-    def get(self, request):
-        owners = User.objects.filter(role="owner")
-        serializer = UserSerializer(owners, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    queryset = User.objects.filter(role = "owner")
+
 
 
 
@@ -100,7 +120,5 @@ class UserListAPIView(APIView):
     permission_classes = [IsAuthenticated, IsUser]
     serializer_class = UserSerializer
 
-    def get(self, request):
-        normal_users = User.objects.filter(role="user")
-        serializer = UserSerializer(normal_users, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    queryset = User.objects.filter(role = "user")
+
