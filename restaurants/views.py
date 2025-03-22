@@ -10,6 +10,7 @@ from drf_spectacular.utils import extend_schema
 
 
 
+
 # CRUD Operations for Restaurants (Owner Only)
 class RestaurantListCreateView(generics.ListCreateAPIView):
     serializer_class = RestaurantSerializer
@@ -21,7 +22,15 @@ class RestaurantListCreateView(generics.ListCreateAPIView):
 
     # Handle POST operation
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        user = self.request.user
+        restaurant = Restaurant.objects.filter(owner=user).first()  # Get the first restaurant of the owner
+
+        if not restaurant:
+            raise serializers.ValidationError("You don't own any restaurant to add a menu item.")
+
+        serializer.save(restaurant=restaurant)
+
+
 
 
 # Handle ID-wise GET, PUT, PATCH & DELETE operation
@@ -30,6 +39,7 @@ class AllRestaurantDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
     queryset = Restaurant.objects.all()
+
 
 
 
