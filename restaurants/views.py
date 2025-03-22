@@ -43,7 +43,9 @@ class RestaurantMenuItemsView(generics.ListAPIView):
 
     def get_queryset(self):
         restaurant_id = self.kwargs['restaurant_id']
-        return MenuItem.objects.filter(restaurant__id = restaurant_id)
+        print(f"Filtering for restaurant ID: {restaurant_id}")
+        
+        return MenuItem.objects.filter(restaurant = restaurant_id)
     
 
 
