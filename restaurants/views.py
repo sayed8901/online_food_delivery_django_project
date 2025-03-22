@@ -22,14 +22,7 @@ class RestaurantListCreateView(generics.ListCreateAPIView):
 
     # Handle POST operation
     def perform_create(self, serializer):
-        user = self.request.user
-        restaurant = Restaurant.objects.filter(owner=user).first()  # Get the first restaurant of the owner
-
-        if not restaurant:
-            raise serializers.ValidationError("You don't own any restaurant to add a menu item.")
-
-        serializer.save(restaurant=restaurant)
-
+        serializer.save(owner=self.request.user)
 
 
 
@@ -67,25 +60,24 @@ class MenuItemListCreateView(generics.ListCreateAPIView):
 
         if user.role == 'owner':
             # returns only the menu items by filters for only this owner user, He will not able to see the other owners menu items
-            return MenuItem.objects.filter(restaurant__owner = user) 
+            return MenuItem.objects.filter(restaurant = user.restaurant) 
         else:
             return MenuItem.objects.all()  # Users can see all menu items
 
 
     # Handle POST operation (Owner Only)
     def perform_create(self, serializer):
-        # Get restaurant ID from request's 'restaurant' field
-        restaurant_id = self.request.data.get('restaurant')  
+        user = self.request.user
+
+        if user.role != 'owner':
+            raise serializers.ValidationError("Only restaurant owners can add menu items.")
 
         try:
-            # Assign the restaurant dynamically
-            restaurant = Restaurant.objects.get(
-                id = restaurant_id, owner = self.request.user
-            )
-            serializer.save(restaurant = restaurant)  
+            restaurant = user.restaurant  # Auto-fetch the restaurant using OneToOneField
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError("You don't have a registered restaurant.")
 
-        except Restaurant.DoesNotExist:
-            raise serializers.ValidationError("Invalid restaurant ID or you don't own this restaurant.")
+        serializer.save(restaurant=restaurant)  # Automatically set restaurant
 
 
 

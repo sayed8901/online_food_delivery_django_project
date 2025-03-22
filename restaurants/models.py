@@ -3,7 +3,7 @@ from accounts.models import CustomUser
 
 
 class Restaurant(models.Model):
-    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="restaurants")
+    owner = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="restaurant")
 
     name = models.CharField(max_length=255)
     description = models.TextField()
