@@ -165,8 +165,8 @@ class PaymentSuccessView(APIView):
                 # return Response({"message": "Payment completed successfully"})
 
                 # TODO: check the frontend url
-                redirect_url = f'http://localhost:5173/payment/success/{order_id}'
-                # redirect_url = f'https://bd-job-portal.netlify.app/payment/success/{order_id}'
+                # redirect_url = f'http://localhost:5173/payment/success/{order_id}'
+                redirect_url = f'https://online-food-delivery-project.netlify.app/payment/success/{order_id}'
                 print('url to redirect after payment success:', redirect_url)
 
                 return HttpResponseRedirect(redirect_url)
@@ -187,8 +187,8 @@ class PaymentFailView(APIView):
         # return Response({"message": "Payment failed, please try again."}, status=status.HTTP_400_BAD_REQUEST)
 
         # TODO: check the frontend url
-        redirect_url = f'http://localhost:5173/my_orders'
-        # redirect_url = f'https://bd-job-portal.netlify.app/my_orders'
+        # redirect_url = f'http://localhost:5173/my_orders'
+        redirect_url = f'https://online-food-delivery-project.netlify.app/my_orders'
         print('url to redirect if payment fail:', redirect_url)
 
         return HttpResponseRedirect(redirect_url)
@@ -204,8 +204,8 @@ class PaymentCancelView(APIView):
         # return Response({"message": "Payment canceled by user."}, status=status.HTTP_200_OK)
 
         # TODO: check the frontend url
-        redirect_url = f'http://localhost:5173/my_orders'
-        # redirect_url = f'https://bd-job-portal.netlify.app/my_orders'
+        # redirect_url = f'http://localhost:5173/my_orders'
+        redirect_url = f'https://online-food-delivery-project.netlify.app/my_orders'
         print('url to redirect if payment canceled:', redirect_url)
 
         return HttpResponseRedirect(redirect_url)

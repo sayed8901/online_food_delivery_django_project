@@ -55,8 +55,8 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",                # Local React frontend
-    # "https://your-frontend-domain.com",     # Add production domain when deploying
+    "http://localhost:5173",                                # Local React frontend
+    "https://online-food-delivery-project.netlify.app",     # Add production domain when deploying
 ]
 
 
