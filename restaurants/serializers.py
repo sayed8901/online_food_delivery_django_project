@@ -13,6 +13,8 @@ class RestaurantSerializer(serializers.ModelSerializer):
 
 
 class MenuItemSerializer(serializers.ModelSerializer):
+    restaurant = serializers.StringRelatedField(many=False)
+
     class Meta:
         model = MenuItem
         fields = '__all__'
